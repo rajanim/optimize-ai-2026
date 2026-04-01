@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>From Boolean Search to Agentic Generative Discovery — Rajani Maski</title>
+  <meta name="description" content="Orchestrating 25 Years of IR Innovation. A talk by Rajani Maski at Optimized AI Conference 2026." />
+  <meta property="og:title" content="From Boolean Search to Agentic Generative Discovery" />
+  <meta property="og:description" content="Orchestrating 25 Years of IR Innovation — Rajani Maski, Shutterstock" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=630&fit=crop" />
+  <meta name="keywords" content="search, information retrieval, BM25, neural IR, CLIP, multimodal, agentic, LLM, OpenSearch, MCP" />
+  <meta name="author" content="Rajani Maski" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --border: #222;
+      --purple: #9b59f5;
+      --orange: #f5a623;
+      --text: #e8e8e8;
+      --muted: #888;
+      --radius: 10px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 40px 24px 36px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--purple);
+      background: rgba(155, 89, 245, 0.12);
+      border: 1px solid rgba(155, 89, 245, 0.3);
+      border-radius: 4px;
+      padding: 3px 10px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(24px, 4vw, 38px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: var(--orange);
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .meta span { display: flex; align-items: center; gap: 6px; }
+
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* ── VIDEO ── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .video-wrapper {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 48px;
+    }
+
+    .video-placeholder {
+      aspect-ratio: 16/9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      color: var(--muted);
+      background: #0d0d0d;
+      font-size: 15px;
+    }
+
+    .video-placeholder svg { opacity: 0.35; }
+
+    .video-placeholder a {
+      color: var(--purple);
+      text-decoration: none;
+      font-size: 13px;
+      border: 1px solid rgba(155,89,245,0.4);
+      padding: 6px 16px;
+      border-radius: 6px;
+    }
+
+    .video-placeholder a:hover { background: rgba(155,89,245,0.1); }
+
+    /* actual embed — hidden until JS replaces placeholder */
+    .video-embed {
+      display: none;
+      aspect-ratio: 16/9;
+    }
+    .video-embed iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+    /* ── PDF VIEWER ── */
+    .pdf-section { margin-bottom: 48px; }
+
+    .pdf-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: var(--radius) var(--radius) 0 0;
+      padding: 12px 16px;
+    }
+
+    .pdf-nav { display: flex; align-items: center; gap: 8px; }
+
+    .pdf-nav button {
+      background: #1e1e1e;
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 6px;
+      width: 32px; height: 32px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+
+    .pdf-nav button:hover:not(:disabled) { background: #2a2a2a; }
+    .pdf-nav button:disabled { opacity: 0.3; cursor: default; }
+
+    #page-info { font-size: 13px; color: var(--muted); min-width: 80px; text-align: center; }
+
+    .pdf-actions { display: flex; gap: 8px; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 6px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--text);
+    }
+    .btn-ghost:hover { background: #1e1e1e; }
+
+    .btn-primary {
+      background: var(--purple);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #8a4de0; }
+
+    #pdf-canvas-container {
+      background: #1a1a1a;
+      border: 1px solid var(--border);
+      border-radius: 0 0 var(--radius) var(--radius);
+      min-height: 500px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #pdf-canvas { max-width: 100%; display: block; }
+
+    .pdf-loading {
+      position: absolute;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      color: var(--muted); font-size: 14px;
+    }
+
+    .spinner {
+      width: 28px; height: 28px;
+      border: 2px solid var(--border);
+      border-top-color: var(--purple);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── ABOUT / LINKS ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 540px) { .about-grid { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .card h3 { font-size: 13px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+    .card p, .card a { font-size: 14px; color: var(--text); line-height: 1.6; }
+    .card a { color: var(--purple); text-decoration: none; display: block; }
+    .card a:hover { text-decoration: underline; }
+
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 12px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── SLIDE GALLERY ── */
+    .gallery-wrapper {
+      position: relative;
+      margin-bottom: 48px;
+    }
+
+    .gallery-container {
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .gallery-slides {
+      display: flex;
+      transition: transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+
+    .gallery-slide {
+      min-width: 100%;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .gallery-slide-icon {
+      font-size: 48px;
+      margin-bottom: 8px;
+    }
+
+    .gallery-slide h3 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .gallery-slide .subtitle-text {
+      font-size: 14px;
+      color: var(--purple);
+      font-weight: 600;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .gallery-slide p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text);
+      max-width: 600px;
+    }
+
+    .gallery-slide ul {
+      list-style: none;
+      margin-top: 12px;
+    }
+
+    .gallery-slide li {
+      font-size: 13px;
+      color: var(--text);
+      margin: 8px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .gallery-slide li:before {
+      content: '›';
+      position: absolute;
+      left: 0;
+      color: var(--purple);
+      font-weight: bold;
+    }
+
+    .gallery-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 32px;
+      background: #0d0d0d;
+      border-top: 1px solid var(--border);
+    }
+
+    .gallery-dots {
+      display: flex;
+      gap: 8px;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(155, 89, 245, 0.3);
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 1px solid rgba(155, 89, 245, 0.5);
+    }
+
+    .dot.active {
+      background: var(--purple);
+      width: 24px;
+      border-radius: 4px;
+      border-color: var(--purple);
+    }
+
+    .gallery-arrow {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: all 0.15s;
+    }
+
+    .gallery-arrow:hover:not(:disabled) {
+      background: #1e1e1e;
+      border-color: var(--purple);
+      color: var(--purple);
+    }
+
+    .gallery-arrow:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+
+    .gallery-nav-left { order: -1; }
+    .gallery-nav-right { order: 1; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="tag">Conference Talk · 2026</div>
+  <h1>From Boolean Search to<br>Agentic Generative Discovery</h1>
+  <p class="subtitle">Orchestrating 25 Years of IR Innovation</p>
+  <div class="meta">
+    <span>🎤 Rajani Maski</span>
+    <span>🏢 Shutterstock · Staff Software Engineer, AI</span>
+    <span>📅 Optimized AI Conference 2026</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- VIDEO SECTION -->
+  <div class="section-label">Demo Recording</div>
+  <div class="video-wrapper" id="video-section">
+    <div class="video-placeholder" id="video-placeholder">
+      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="12" r="10"/>
+        <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/>
+      </svg>
+      <span>Video coming soon</span>
+      <!-- INSTRUCTIONS: Replace the line below with your actual YouTube/Loom URL -->
+      <!-- <a href="#" id="video-link">▶ Watch on YouTube</a> -->
+    </div>
+    <div class="video-embed" id="video-embed">
+      <iframe id="video-iframe" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <!-- KEY SLIDES GALLERY -->
+  <div class="section-label">Key Highlights</div>
+  <div class="gallery-wrapper">
+    <div class="gallery-container">
+      <div class="gallery-slides" id="gallery-slides">
+        
+        <div class="gallery-slide">
+          <div class="gallery-slide-icon">🏢</div>
+          <h3>Shutterstock at Scale</h3>
+          <p class="subtitle-text">The infrastructure that powers discovery</p>
+          <ul>
+            <li>500M+ creative assets (Images, Video, Music, Sound FX)</li>
+            <li>2M+ contributors worldwide with daily growth</li>
+            <li>500K+ daily search sessions across 25+ languages</li>
+            <li>AWS-native stack: OpenSearch, S3, SageMaker, Lambda, Bedrock</li>
+          </ul>
+        </div>
+
+        <div class="gallery-slide">
+          <div class="gallery-slide-icon">📈</div>
+          <h3>25 Years of IR Innovation</h3>
+          <p class="subtitle-text">Evolution without deprecation</p>
+          <ul>
+            <li>~2000: Boolean & TF-IDF — the foundation</li>
+            <li>~2004: BM25 & Inverted Index — precision at scale</li>
+            <li>~2009: Learning to Rank — early ML integration</li>
+            <li>~2018: BERT & Transformers — semantic understanding</li>
+            <li>~2021: CLIP & Multimodal — cross-modal alignment</li>
+            <li>2024+: Agentic Orchestration — intelligent composition</li>
+          </ul>
+          <p style="font-size:13px; color:var(--orange); margin-top:12px;">None are deprecated. All are tools in the agent's toolkit.</p>
+        </div>
+
+        <div class="gallery-slide">
+          <div class="gallery-slide-icon">⚖️</div>
+          <h3>Lexical (BM25) Search</h3>
+          <p class="subtitle-text">Why term-based retrieval still wins</p>
+          <ul>
+            <li><strong>Exact Match Precision:</strong> SKU IDs, proper nouns — vectors hallucinate</li>
+            <li><strong>Latency Profile:</strong> Sub-millisecond lookups; dense retrieval is 10-50x slower</li>
+            <li><strong>Cold Start Reliability:</strong> Works day one for new assets without embeddings</li>
+            <li><strong>Explainability:</strong> Every score is auditable for debugging and editorial trust</li>
+          </ul>
+        </div>
+
+        <div class="gallery-slide">
+          <div class="gallery-slide-icon">🎬</div>
+          <h3>Multimodal Search</h3>
+          <p class="subtitle-text">Users don't think in modalities — we bridge that gap</p>
+          <ul>
+            <li><strong>Image:</strong> CLIP embeddings + visual similarity for reference matching</li>
+            <li><strong>Video:</strong> Frame-level CLIP + temporal signals for motion & mood</li>
+            <li><strong>Music:</strong> Audio embeddings + BPM/mood taxonomy for audio discovery</li>
+            <li><strong>Voice:</strong> ASR → intent → structured query for natural expression</li>
+          </ul>
+          <p style="font-size:13px; color:var(--muted); margin-top:12px;">All modalities unified in OpenSearch for the agent.</p>
+        </div>
+
+        <div class="gallery-slide">
+          <div class="gallery-slide-icon">🔗</div>
+          <h3>Hybrid Fusion Patterns</h3>
+          <p class="subtitle-text">When 1 + 1 equals more than 2</p>
+          <ul>
+            <li><strong>RRF (Reciprocal Rank Fusion):</strong> Merge BM25 + vector rankings without score normalization. Best for general discovery.</li>
+            <li><strong>Weighted Combo:</strong> α·BM25 + β·semantic with tuning per query class. Best for known-item + semantic mix.</li>
+            <li><strong>Cascade Re-rank:</strong> BM25 retrieves, cross-encoder re-ranks top-K. Best for precision-critical editorial.</li>
+          </ul>
+          <p style="font-size:13px; color:var(--orange); margin-top:12px;">Agent selects fusion pattern at query time based on detected intent.</p>
+        </div>
+
+        <div class="gallery-slide">
+          <div class="gallery-slide-icon">🤖</div>
+          <h3>Agentic Search Patterns</h3>
+          <p class="subtitle-text">Four behaviors that distinguish agentic IR</p>
+          <ul>
+            <li><strong>Reflection:</strong> Evaluate own output, detect gaps, re-query with refined parameters</li>
+            <li><strong>Planning:</strong> Decompose complex queries into sub-goals before retrieval</li>
+            <li><strong>Tool Use:</strong> BM25, dense retrieval, CLIP, knowledge graph — each as discrete tools</li>
+            <li><strong>Multi-Agent:</strong> Specialized sub-agents per modality; coordinator fuses results</li>
+          </ul>
+        </div>
+
+        <div class="gallery-slide">
+          <div class="gallery-slide-icon">⚙️</div>
+          <h3>Agentic Workflow</h3>
+          <p class="subtitle-text">From intent to discovery in four steps</p>
+          <ul>
+            <li><strong>01 Search Intent Detection:</strong> LLM classifies query intent (Discovery, Known-item, Similarity, Refine)</li>
+            <li><strong>02 Entity Extraction:</strong> Extract subject, style, mood, modality, license, era, brand</li>
+            <li><strong>03 LLM Query Strategy:</strong> Decide tools, fusion pattern, filters → execution plan</li>
+            <li><strong>04 OpenSearch via MCP:</strong> Execute BM25, k-NN, hybrid endpoints; fuse results</li>
+          </ul>
+        </div>
+
+        <div class="gallery-slide">
+          <div class="gallery-slide-icon">🛠️</div>
+          <h3>MCP: Agent Tools for OpenSearch</h3>
+          <p class="subtitle-text">Structured retrieval at the LLM layer</p>
+          <ul>
+            <li><strong>Tool Schema:</strong> opensearch_search(query, mode, filters, top_k)</li>
+            <li><strong>Modes:</strong> bm25 | knn | hybrid</li>
+            <li><strong>Reflection:</strong> Agent evaluates result quality; retries with refined params</li>
+            <li><strong>Tool Use:</strong> Each mode is a discrete capability LLM can reason about</li>
+            <li><strong>Planning:</strong> Filters + mode selection happen before execution</li>
+          </ul>
+        </div>
+
+        <div class="gallery-slide">
+          <div class="gallery-slide-icon">🎯</div>
+          <h3>Key Takeaways</h3>
+          <p class="subtitle-text">Role-specific insights from production agentic search</p>
+          <ul>
+            <li><strong>For Search Engineers:</strong> Expose retrieval tools as discrete MCP endpoints; instrument all tool calls</li>
+            <li><strong>For AI Engineers:</strong> Use Reflection & Planning before retrieval; multi-agent fan-out for modalities</li>
+            <li><strong>For Engineering Managers:</strong> Measure hybrid search ROI; invest in eval frameworks to catch non-determinism</li>
+          </ul>
+          <p style="font-size:14px; color:var(--orange); margin-top:16px; font-weight:600;">The orchestra was always here. We finally have a conductor.</p>
+        </div>
+
+      </div>
+    </div>
+    <div class="gallery-nav">
+      <button class="gallery-arrow gallery-nav-left" id="gallery-prev" title="Previous">‹</button>
+      <div class="gallery-dots" id="gallery-dots"></div>
+      <button class="gallery-arrow gallery-nav-right" id="gallery-next" title="Next">›</button>
+    </div>
+  </div>
+  <div class="pdf-section">
+    <div class="section-label">Slides</div>
+    <div class="pdf-toolbar">
+      <div class="pdf-nav">
+        <button id="prev-btn" title="Previous slide">&#8592;</button>
+        <span id="page-info">Loading…</span>
+        <button id="next-btn" title="Next slide">&#8594;</button>
+      </div>
+      <div class="pdf-actions">
+        <a class="btn btn-ghost" href="slides.pdf" target="_blank">⤢ Full screen</a>
+        <a class="btn btn-primary" href="slides.pdf" download="Rajani_Maski_Agentic_Discovery_2026.pdf">↓ Download PDF</a>
+      </div>
+    </div>
+    <div id="pdf-canvas-container">
+      <div class="pdf-loading" id="pdf-loading">
+        <div class="spinner"></div>
+        <span>Loading slides…</span>
+      </div>
+      <canvas id="pdf-canvas"></canvas>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="about-grid">
+    <div class="card">
+      <h3>About this talk</h3>
+      <p>A deep dive into how Shutterstock's multimodal search stack evolved from BM25 and inverted indexes to LLM-orchestrated agentic retrieval — and why none of the old layers were discarded along the way.</p>
+    </div>
+    <div class="card">
+      <h3>Speaker links</h3>
+      <a href="https://linkedin.com/in/rajanimaski" target="_blank">🔗 LinkedIn</a>
+      <a href="https://github.com/rajanimaski" target="_blank">🐙 GitHub</a>
+      <!-- Add more links as needed -->
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Rajani Maski &nbsp;·&nbsp; Optimized AI Conference 2026 &nbsp;·&nbsp; Shutterstock
+</footer>
+
+<!-- PDF.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  // ── PDF Viewer ─────────────────────────────────────────
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  let pdfDoc = null, currentPage = 1;
+  const canvas = document.getElementById('pdf-canvas');
+  const ctx = canvas.getContext('2d');
+  const loading = document.getElementById('pdf-loading');
+  const pageInfo = document.getElementById('page-info');
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+
+  async function renderPage(num) {
+    const page = await pdfDoc.getPage(num);
+    const vp = page.getViewport({ scale: window.devicePixelRatio >= 2 ? 2.5 : 2 });
+    canvas.width = vp.width;
+    canvas.height = vp.height;
+    canvas.style.width = '100%';
+    await page.render({ canvasContext: ctx, viewport: vp }).promise;
+    pageInfo.textContent = `${num} / ${pdfDoc.numPages}`;
+    prevBtn.disabled = num <= 1;
+    nextBtn.disabled = num >= pdfDoc.numPages;
+  }
+
+  pdfjsLib.getDocument('slides.pdf').promise.then(doc => {
+    pdfDoc = doc;
+    loading.style.display = 'none';
+    renderPage(1);
+  }).catch(err => {
+    loading.innerHTML = '<span style="color:#f55">Could not load PDF. Make sure slides.pdf is in the same folder.</span>';
+    console.error(err);
+  });
+
+  prevBtn.addEventListener('click', () => { if (currentPage > 1) renderPage(--currentPage); });
+  nextBtn.addEventListener('click', () => { if (currentPage < pdfDoc?.numPages) renderPage(++currentPage); });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextBtn.click();
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prevBtn.click();
+  });
+
+  // ── Video embed helper ──────────────────────────────────
+  // To activate: call embedVideo('https://youtu.be/YOUR_ID') from console
+  // or hardcode your URL below after uploading.
+  //
+  embedVideo('https://youtu.be/LP59ugyd0vQ');
+  //
+  function embedVideo(url) {
+    let embedUrl = '';
+    const yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([A-Za-z0-9_-]{11})/);
+    const loom = url.match(/loom\.com\/share\/([a-z0-9]+)/i);
+    if (yt)   embedUrl = `https://www.youtube.com/embed/${yt[1]}?rel=0`;
+    if (loom) embedUrl = `https://www.loom.com/embed/${loom[1]}`;
+    if (!embedUrl) { console.warn('Unrecognized video URL'); return; }
+    document.getElementById('video-placeholder').style.display = 'none';
+    const embed = document.getElementById('video-embed');
+    document.getElementById('video-iframe').src = embedUrl;
+    embed.style.display = 'block';
+  }
+  window.embedVideo = embedVideo;
+
+  // ── Gallery Carousel ────────────────────────────────────
+  const slides = document.querySelectorAll('.gallery-slide');
+  const slidesContainer = document.getElementById('gallery-slides');
+  const dotsContainer = document.getElementById('gallery-dots');
+  const prevBtn = document.getElementById('gallery-prev');
+  const nextBtn = document.getElementById('gallery-next');
+  let currentSlide = 0;
+
+  // Create dots
+  slides.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', () => goToSlide(i));
+    dotsContainer.appendChild(dot);
+  });
+
+  function updateSlide() {
+    slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+    document.querySelectorAll('.dot').forEach((d, i) => {
+      d.classList.toggle('active', i === currentSlide);
+    });
+    prevBtn.disabled = currentSlide === 0;
+    nextBtn.disabled = currentSlide === slides.length - 1;
+  }
+
+  function goToSlide(n) {
+    currentSlide = Math.max(0, Math.min(n, slides.length - 1));
+    updateSlide();
+  }
+
+  prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+  nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+
+  document.addEventListener('keydown', e => {
+    if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+      if ((e.key === 'ArrowRight' || e.key === 'ArrowDown') && currentSlide < slides.length - 1) nextBtn.click();
+      if ((e.key === 'ArrowLeft' || e.key === 'ArrowUp') && currentSlide > 0) prevBtn.click();
+    }
+  });
+
+  updateSlide();
+</script>
+</body>
+</html>
