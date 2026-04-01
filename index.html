@@ -389,6 +389,12 @@
 
     .gallery-nav-left { order: -1; }
     .gallery-nav-right { order: 1; }
+
+    .gallery-slide .btn {
+      margin-top: 12px;
+      padding: 8px 12px;
+      font-size: 13px;
+    }
   </style>
 </head>
 <body>
@@ -603,8 +609,8 @@
   const ctx = canvas.getContext('2d');
   const loading = document.getElementById('pdf-loading');
   const pageInfo = document.getElementById('page-info');
-  const prevBtn = document.getElementById('prev-btn');
-  const nextBtn = document.getElementById('next-btn');
+  const pdfPrevBtn = document.getElementById('prev-btn');
+  const pdfNextBtn = document.getElementById('next-btn');
 
   async function renderPage(num) {
     const page = await pdfDoc.getPage(num);
@@ -614,8 +620,8 @@
     canvas.style.width = '100%';
     await page.render({ canvasContext: ctx, viewport: vp }).promise;
     pageInfo.textContent = `${num} / ${pdfDoc.numPages}`;
-    prevBtn.disabled = num <= 1;
-    nextBtn.disabled = num >= pdfDoc.numPages;
+    pdfPrevBtn.disabled = num <= 1;
+    pdfNextBtn.disabled = num >= pdfDoc.numPages;
   }
 
   pdfjsLib.getDocument('slides.pdf').promise.then(doc => {
@@ -627,12 +633,12 @@
     console.error(err);
   });
 
-  prevBtn.addEventListener('click', () => { if (currentPage > 1) renderPage(--currentPage); });
-  nextBtn.addEventListener('click', () => { if (currentPage < pdfDoc?.numPages) renderPage(++currentPage); });
+  pdfPrevBtn.addEventListener('click', () => { if (currentPage > 1) renderPage(--currentPage); });
+  pdfNextBtn.addEventListener('click', () => { if (currentPage < pdfDoc?.numPages) renderPage(++currentPage); });
 
   document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextBtn.click();
-    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prevBtn.click();
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') pdfNextBtn.click();
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   pdfPrevBtn.click();
   });
 
   // ── Video embed helper ──────────────────────────────────
@@ -659,9 +665,21 @@
   const slides = document.querySelectorAll('.gallery-slide');
   const slidesContainer = document.getElementById('gallery-slides');
   const dotsContainer = document.getElementById('gallery-dots');
-  const prevBtn = document.getElementById('gallery-prev');
-  const nextBtn = document.getElementById('gallery-next');
+  const galleryPrevBtn = document.getElementById('gallery-prev');
+  const galleryNextBtn = document.getElementById('gallery-next');
   let currentSlide = 0;
+
+  // bind PDF page IDs and add action buttons to each highlight slide
+  slides.forEach((slide, i) => {
+    const pageIndex = i + 1;
+    slide.dataset.pdfPage = pageIndex;
+
+    const actionBtn = document.createElement('button');
+    actionBtn.className = 'btn btn-ghost';
+    actionBtn.textContent = `Open slide ${pageIndex} in PDF`;
+    actionBtn.addEventListener('click', () => syncPdfWithSlide(pageIndex));
+    slide.appendChild(actionBtn);
+  });
 
   // Create dots
   slides.forEach((_, i) => {
@@ -671,27 +689,38 @@
     dotsContainer.appendChild(dot);
   });
 
+  function syncPdfWithSlide(page) {
+    if (!pdfDoc) return;
+    if (page < 1 || page > pdfDoc.numPages) return;
+    currentPage = page;
+    renderPage(page);
+  }
+
   function updateSlide() {
     slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
     document.querySelectorAll('.dot').forEach((d, i) => {
       d.classList.toggle('active', i === currentSlide);
     });
-    prevBtn.disabled = currentSlide === 0;
-    nextBtn.disabled = currentSlide === slides.length - 1;
+    galleryPrevBtn.disabled = currentSlide === 0;
+    galleryNextBtn.disabled = currentSlide === slides.length - 1;
   }
 
   function goToSlide(n) {
     currentSlide = Math.max(0, Math.min(n, slides.length - 1));
     updateSlide();
+    const pdfPage = Number(slides[currentSlide].dataset.pdfPage) || null;
+    if (pdfPage !== null) {
+      syncPdfWithSlide(pdfPage);
+    }
   }
 
-  prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
-  nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+  galleryPrevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+  galleryNextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
 
   document.addEventListener('keydown', e => {
     if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-      if ((e.key === 'ArrowRight' || e.key === 'ArrowDown') && currentSlide < slides.length - 1) nextBtn.click();
-      if ((e.key === 'ArrowLeft' || e.key === 'ArrowUp') && currentSlide > 0) prevBtn.click();
+      if ((e.key === 'ArrowRight' || e.key === 'ArrowDown') && currentSlide < slides.length - 1) galleryNextBtn.click();
+      if ((e.key === 'ArrowLeft' || e.key === 'ArrowUp') && currentSlide > 0) galleryPrevBtn.click();
     }
   });
 
