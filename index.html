@@ -279,6 +279,34 @@
       gap: 16px;
     }
 
+    .gallery-slide-thumbnail-wrapper {
+      margin: 16px 0;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .gallery-slide-thumbnail {
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .gallery-slide-thumbnail:hover {
+      border-color: var(--purple);
+      box-shadow: 0 4px 12px rgba(155, 89, 245, 0.3);
+    }
+
+    .gallery-slide-thumbnail canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
     .gallery-slide-icon {
       font-size: 48px;
       margin-bottom: 8px;
@@ -428,133 +456,6 @@
     </div>
   </div>
 
-  <!-- KEY SLIDES GALLERY -->
-  <div class="section-label">Key Highlights</div>
-  <div class="gallery-wrapper">
-    <div class="gallery-container">
-      <div class="gallery-slides" id="gallery-slides">
-        
-        <div class="gallery-slide">
-          <div class="gallery-slide-icon">🏢</div>
-          <h3>Shutterstock at Scale</h3>
-          <p class="subtitle-text">The infrastructure that powers discovery</p>
-          <ul>
-            <li>500M+ creative assets (Images, Video, Music, Sound FX)</li>
-            <li>2M+ contributors worldwide with daily growth</li>
-            <li>500K+ daily search sessions across 25+ languages</li>
-            <li>AWS-native stack: OpenSearch, S3, SageMaker, Lambda, Bedrock</li>
-          </ul>
-        </div>
-
-        <div class="gallery-slide">
-          <div class="gallery-slide-icon">📈</div>
-          <h3>25 Years of IR Innovation</h3>
-          <p class="subtitle-text">Evolution without deprecation</p>
-          <ul>
-            <li>~2000: Boolean & TF-IDF — the foundation</li>
-            <li>~2004: BM25 & Inverted Index — precision at scale</li>
-            <li>~2009: Learning to Rank — early ML integration</li>
-            <li>~2018: BERT & Transformers — semantic understanding</li>
-            <li>~2021: CLIP & Multimodal — cross-modal alignment</li>
-            <li>2024+: Agentic Orchestration — intelligent composition</li>
-          </ul>
-          <p style="font-size:13px; color:var(--orange); margin-top:12px;">None are deprecated. All are tools in the agent's toolkit.</p>
-        </div>
-
-        <div class="gallery-slide">
-          <div class="gallery-slide-icon">⚖️</div>
-          <h3>Lexical (BM25) Search</h3>
-          <p class="subtitle-text">Why term-based retrieval still wins</p>
-          <ul>
-            <li><strong>Exact Match Precision:</strong> SKU IDs, proper nouns — vectors hallucinate</li>
-            <li><strong>Latency Profile:</strong> Sub-millisecond lookups; dense retrieval is 10-50x slower</li>
-            <li><strong>Cold Start Reliability:</strong> Works day one for new assets without embeddings</li>
-            <li><strong>Explainability:</strong> Every score is auditable for debugging and editorial trust</li>
-          </ul>
-        </div>
-
-        <div class="gallery-slide">
-          <div class="gallery-slide-icon">🎬</div>
-          <h3>Multimodal Search</h3>
-          <p class="subtitle-text">Users don't think in modalities — we bridge that gap</p>
-          <ul>
-            <li><strong>Image:</strong> CLIP embeddings + visual similarity for reference matching</li>
-            <li><strong>Video:</strong> Frame-level CLIP + temporal signals for motion & mood</li>
-            <li><strong>Music:</strong> Audio embeddings + BPM/mood taxonomy for audio discovery</li>
-            <li><strong>Voice:</strong> ASR → intent → structured query for natural expression</li>
-          </ul>
-          <p style="font-size:13px; color:var(--muted); margin-top:12px;">All modalities unified in OpenSearch for the agent.</p>
-        </div>
-
-        <div class="gallery-slide">
-          <div class="gallery-slide-icon">🔗</div>
-          <h3>Hybrid Fusion Patterns</h3>
-          <p class="subtitle-text">When 1 + 1 equals more than 2</p>
-          <ul>
-            <li><strong>RRF (Reciprocal Rank Fusion):</strong> Merge BM25 + vector rankings without score normalization. Best for general discovery.</li>
-            <li><strong>Weighted Combo:</strong> α·BM25 + β·semantic with tuning per query class. Best for known-item + semantic mix.</li>
-            <li><strong>Cascade Re-rank:</strong> BM25 retrieves, cross-encoder re-ranks top-K. Best for precision-critical editorial.</li>
-          </ul>
-          <p style="font-size:13px; color:var(--orange); margin-top:12px;">Agent selects fusion pattern at query time based on detected intent.</p>
-        </div>
-
-        <div class="gallery-slide">
-          <div class="gallery-slide-icon">🤖</div>
-          <h3>Agentic Search Patterns</h3>
-          <p class="subtitle-text">Four behaviors that distinguish agentic IR</p>
-          <ul>
-            <li><strong>Reflection:</strong> Evaluate own output, detect gaps, re-query with refined parameters</li>
-            <li><strong>Planning:</strong> Decompose complex queries into sub-goals before retrieval</li>
-            <li><strong>Tool Use:</strong> BM25, dense retrieval, CLIP, knowledge graph — each as discrete tools</li>
-            <li><strong>Multi-Agent:</strong> Specialized sub-agents per modality; coordinator fuses results</li>
-          </ul>
-        </div>
-
-        <div class="gallery-slide">
-          <div class="gallery-slide-icon">⚙️</div>
-          <h3>Agentic Workflow</h3>
-          <p class="subtitle-text">From intent to discovery in four steps</p>
-          <ul>
-            <li><strong>01 Search Intent Detection:</strong> LLM classifies query intent (Discovery, Known-item, Similarity, Refine)</li>
-            <li><strong>02 Entity Extraction:</strong> Extract subject, style, mood, modality, license, era, brand</li>
-            <li><strong>03 LLM Query Strategy:</strong> Decide tools, fusion pattern, filters → execution plan</li>
-            <li><strong>04 OpenSearch via MCP:</strong> Execute BM25, k-NN, hybrid endpoints; fuse results</li>
-          </ul>
-        </div>
-
-        <div class="gallery-slide">
-          <div class="gallery-slide-icon">🛠️</div>
-          <h3>MCP: Agent Tools for OpenSearch</h3>
-          <p class="subtitle-text">Structured retrieval at the LLM layer</p>
-          <ul>
-            <li><strong>Tool Schema:</strong> opensearch_search(query, mode, filters, top_k)</li>
-            <li><strong>Modes:</strong> bm25 | knn | hybrid</li>
-            <li><strong>Reflection:</strong> Agent evaluates result quality; retries with refined params</li>
-            <li><strong>Tool Use:</strong> Each mode is a discrete capability LLM can reason about</li>
-            <li><strong>Planning:</strong> Filters + mode selection happen before execution</li>
-          </ul>
-        </div>
-
-        <div class="gallery-slide">
-          <div class="gallery-slide-icon">🎯</div>
-          <h3>Key Takeaways</h3>
-          <p class="subtitle-text">Role-specific insights from production agentic search</p>
-          <ul>
-            <li><strong>For Search Engineers:</strong> Expose retrieval tools as discrete MCP endpoints; instrument all tool calls</li>
-            <li><strong>For AI Engineers:</strong> Use Reflection & Planning before retrieval; multi-agent fan-out for modalities</li>
-            <li><strong>For Engineering Managers:</strong> Measure hybrid search ROI; invest in eval frameworks to catch non-determinism</li>
-          </ul>
-          <p style="font-size:14px; color:var(--orange); margin-top:16px; font-weight:600;">The orchestra was always here. We finally have a conductor.</p>
-        </div>
-
-      </div>
-    </div>
-    <div class="gallery-nav">
-      <button class="gallery-arrow gallery-nav-left" id="gallery-prev" title="Previous">‹</button>
-      <div class="gallery-dots" id="gallery-dots"></div>
-      <button class="gallery-arrow gallery-nav-right" id="gallery-next" title="Next">›</button>
-    </div>
-  </div>
   <div class="pdf-section">
     <div class="section-label">Slides</div>
     <div class="pdf-toolbar">
@@ -628,13 +529,75 @@
     pdfDoc = doc;
     loading.style.display = 'none';
     renderPage(1);
+    renderGalleryThumbnails();
   }).catch(err => {
     loading.innerHTML = '<span style="color:#f55">Could not load PDF. Make sure slides.pdf is in the same folder.</span>';
     console.error(err);
   });
 
+  async function renderGalleryThumbnails() {
+    if (!pdfDoc) return;
+    const slides = document.querySelectorAll('.gallery-slide');
+    
+    for (let i = 0; i < slides.length; i++) {
+      const pageNum = i + 1;
+      if (pageNum > pdfDoc.numPages) break;
+      
+      try {
+        const page = await pdfDoc.getPage(pageNum);
+        const scale = 1.2;
+        const vp = page.getViewport({ scale });
+        
+        // Create thumbnail canvas
+        const thumbCanvas = document.createElement('canvas');
+        thumbCanvas.width = vp.width;
+        thumbCanvas.height = vp.height;
+        
+        // Set fixed display size (about 120px wide)
+        thumbCanvas.style.width = '120px';
+        thumbCanvas.style.height = 'auto';
+        
+        const thumbCtx = thumbCanvas.getContext('2d');
+        await page.render({ canvasContext: thumbCtx, viewport: vp }).promise;
+        
+        // Create wrapper and insert at top of slide
+        const wrapper = document.createElement('div');
+        wrapper.className = 'gallery-slide-thumbnail-wrapper';
+        
+        const thumbDiv = document.createElement('div');
+        thumbDiv.className = 'gallery-slide-thumbnail';
+        thumbDiv.style.cursor = 'pointer';
+        thumbDiv.addEventListener('click', () => {
+          syncPdfWithSlide(pageNum);
+          document.querySelector('#pdf-canvas-container').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+        
+        thumbDiv.appendChild(thumbCanvas);
+        wrapper.appendChild(thumbDiv);
+        
+        // Insert after icon but before content
+        const iconEl = slides[i].querySelector('.gallery-slide-icon');
+        if (iconEl) {
+          iconEl.parentNode.insertBefore(wrapper, iconEl.nextSibling);
+        } else {
+          slides[i].insertBefore(wrapper, slides[i].firstChild);
+        }
+      } catch (err) {
+        console.warn(`Could not render thumbnail for page ${pageNum}:`, err);
+      }
+    }
+  }
+
   pdfPrevBtn.addEventListener('click', () => { if (currentPage > 1) renderPage(--currentPage); });
   pdfNextBtn.addEventListener('click', () => { if (currentPage < pdfDoc?.numPages) renderPage(++currentPage); });
+
+  // Define sync function early so it's available to gallery and PDF logic
+  function syncPdfWithSlide(page) {
+    if (!pdfDoc) return;
+    if (page < 1 || page > pdfDoc.numPages) return;
+    currentPage = page;
+    renderPage(page);
+  }
 
   document.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown') pdfNextBtn.click();
@@ -661,70 +624,7 @@
   }
   window.embedVideo = embedVideo;
 
-  // ── Gallery Carousel ────────────────────────────────────
-  const slides = document.querySelectorAll('.gallery-slide');
-  const slidesContainer = document.getElementById('gallery-slides');
-  const dotsContainer = document.getElementById('gallery-dots');
-  const galleryPrevBtn = document.getElementById('gallery-prev');
-  const galleryNextBtn = document.getElementById('gallery-next');
-  let currentSlide = 0;
 
-  // bind PDF page IDs and add action buttons to each highlight slide
-  slides.forEach((slide, i) => {
-    const pageIndex = i + 1;
-    slide.dataset.pdfPage = pageIndex;
-
-    const actionBtn = document.createElement('button');
-    actionBtn.className = 'btn btn-ghost';
-    actionBtn.textContent = `Open slide ${pageIndex} in PDF`;
-    actionBtn.addEventListener('click', () => syncPdfWithSlide(pageIndex));
-    slide.appendChild(actionBtn);
-  });
-
-  // Create dots
-  slides.forEach((_, i) => {
-    const dot = document.createElement('div');
-    dot.className = 'dot' + (i === 0 ? ' active' : '');
-    dot.addEventListener('click', () => goToSlide(i));
-    dotsContainer.appendChild(dot);
-  });
-
-  function syncPdfWithSlide(page) {
-    if (!pdfDoc) return;
-    if (page < 1 || page > pdfDoc.numPages) return;
-    currentPage = page;
-    renderPage(page);
-  }
-
-  function updateSlide() {
-    slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
-    document.querySelectorAll('.dot').forEach((d, i) => {
-      d.classList.toggle('active', i === currentSlide);
-    });
-    galleryPrevBtn.disabled = currentSlide === 0;
-    galleryNextBtn.disabled = currentSlide === slides.length - 1;
-  }
-
-  function goToSlide(n) {
-    currentSlide = Math.max(0, Math.min(n, slides.length - 1));
-    updateSlide();
-    const pdfPage = Number(slides[currentSlide].dataset.pdfPage) || null;
-    if (pdfPage !== null) {
-      syncPdfWithSlide(pdfPage);
-    }
-  }
-
-  galleryPrevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
-  galleryNextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
-
-  document.addEventListener('keydown', e => {
-    if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-      if ((e.key === 'ArrowRight' || e.key === 'ArrowDown') && currentSlide < slides.length - 1) galleryNextBtn.click();
-      if ((e.key === 'ArrowLeft' || e.key === 'ArrowUp') && currentSlide > 0) galleryPrevBtn.click();
-    }
-  });
-
-  updateSlide();
 </script>
 </body>
 </html>
